@@ -1,0 +1,2223 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Khata Pro - Ultimate Ledger</title>
+<style>
+:root {
+  --bg: #fff6ef; --card: #ffffff; --card-glass: rgba(255,255,255,0.8); --text: #2b1b12; --sub: #8a7268; --primary: #ff6b4a;
+  --primary-light: #ffe8e0; --danger: #e63950; --success: #ffb300; --warning: #ff9500;
+  --border: #f1e1d4; --shadow: 0 2px 10px rgba(43,27,18,0.08); --radius: 16px;
+  --gradient: linear-gradient(135deg, #ff6b4a 0%, #ffb300 100%);
+}
+[data-theme="dark"] {
+  --bg: #1b1410; --card: #241b15; --card-glass: rgba(36,27,21,0.82); --text: #fff3ea; --sub: #c9b3a3;
+  --primary-light: #3a241a; --border: #3a2b21; --shadow: 0 2px 10px rgba(0,0,0,0.35);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  background: var(--bg);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text); min-height: 100vh;
+  padding-bottom: 80px; transition: background .25s, color .25s;
+  font-size: 15px;
+}
+.container { max-width: 600px; margin: 0 auto; padding: 16px; }
+
+/* Header */
+.app-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 4px; margin-bottom: 8px;
+}
+.app-header h1 {
+  font-size: 1.7rem; font-weight: 800;
+  background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.icon-btn {
+  width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--border);
+  background: var(--card); color: var(--text); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow); font-size: 1.2rem; touch-action: manipulation;
+  transition: transform .12s ease;
+}
+.icon-btn:active { transform: scale(0.92); }
+
+/* Cards */
+.card {
+  background: var(--card); border-radius: var(--radius); padding: 18px;
+  margin-bottom: 14px; box-shadow: var(--shadow); border: 1px solid var(--border);
+}
+.card-title { font-size: 1rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+
+/* Stats Grid */
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.stat-card {
+  padding: 18px; border-radius: var(--radius); color: white;
+  position: relative; overflow: hidden;
+}
+.stat-card.get { background: linear-gradient(135deg, #ffb300, #ff8a00); }
+.stat-card.give { background: linear-gradient(135deg, #ff5064, #e63950); }
+.stat-card.net { background: var(--gradient); grid-column: span 2; }
+.stat-card .emoji { position: absolute; right: 10px; top: 10px; font-size: 1.8rem; opacity: 0.3; }
+.stat-card h3 { font-size: 0.75rem; opacity: 0.9; margin-bottom: 6px; font-weight: 500; }
+.stat-card p { font-size: 1.5rem; font-weight: 800; }
+.stat-card small { font-size: 0.75rem; opacity: 0.85; display: block; margin-top: 4px; }
+
+/* Buttons */
+.btn {
+  padding: 12px 16px; border: none; border-radius: 12px; font-weight: 600;
+  cursor: pointer; transition: transform .12s ease, opacity .12s ease; display: inline-flex; align-items: center;
+  justify-content: center; gap: 8px; font-size: 0.95rem; touch-action: manipulation;
+}
+.btn:active { transform: scale(0.96); }
+.btn-primary { background: var(--gradient); color: white; }
+.btn-danger { background: linear-gradient(135deg, #ff5064, #e63950); color: white; }
+.btn-success { background: linear-gradient(135deg, #ffb300, #ff8a00); color: #2b1b12; }
+.btn-ghost { background: var(--primary-light); color: var(--text); border: 1px solid var(--border); }
+.btn-block { width: 100%; padding: 14px; }
+.btn-sm { padding: 8px 12px; font-size: 0.85rem; }
+
+/* Inputs */
+.input-group { margin-bottom: 14px; }
+.input-group label { display: block; font-size: 0.85rem; color: var(--sub); margin-bottom: 6px; font-weight: 500; }
+input, select, textarea {
+  width: 100%; padding: 13px 14px; border: 1.5px solid var(--border);
+  border-radius: 12px; background: var(--bg); color: var(--text);
+  outline: none; font-size: 1rem; transition: border .15s;
+  font-family: inherit;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+
+/* List Items */
+.list-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 4px; border-bottom: 1px solid var(--border); cursor: pointer;
+  transition: background .12s;
+}
+.list-item:hover { background: var(--primary-light); border-radius: 10px; }
+.list-item:last-child { border-bottom: none; }
+.avatar {
+  width: 46px; height: 46px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 700; margin-right: 12px; font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.flex { display: flex; align-items: center; }
+.flex-col { display: flex; flex-direction: column; }
+.text-right { text-align: right; }
+.text-danger { color: var(--danger); font-weight: 700; }
+.text-success { color: var(--success); font-weight: 700; }
+.text-sub { color: var(--sub); font-size: 0.85rem; }
+
+/* Bottom Nav */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--card);
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-around; padding: 8px 4px;
+  z-index: 100; box-shadow: 0 -2px 10px rgba(43,27,18,0.06);
+}
+.nav-item {
+  display: flex; flex-direction: column; align-items: center;
+  font-size: 0.7rem; color: var(--sub); cursor: pointer;
+  padding: 6px 10px; border-radius: 10px; transition: color .12s;
+  min-width: 50px; touch-action: manipulation;
+}
+.nav-item.active { color: var(--primary); }
+.nav-item.active .nav-icon { background: var(--primary-light); }
+.nav-icon {
+  font-size: 1.4rem; margin-bottom: 2px; padding: 6px;
+  border-radius: 10px; transition: background .12s;
+}
+.nav-item span { font-weight: 500; }
+
+/* FAB */
+.fab {
+  position: fixed; bottom: 90px; right: 20px; width: 60px; height: 60px;
+  border-radius: 50%; background: var(--gradient); color: white;
+  border: none; font-size: 28px; cursor: pointer; z-index: 90;
+  box-shadow: 0 4px 16px rgba(255,107,74,0.45);
+  display: flex; align-items: center; justify-content: center;
+  touch-action: manipulation; transition: transform .12s ease;
+}
+.fab:active { transform: scale(0.9); }
+
+/* Modal */
+.modal {
+  display: none; position: fixed; inset: 0; background: rgba(43,27,18,0.45);
+  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  z-index: 200; align-items: flex-end; justify-content: center;
+}
+.modal.active { display: flex; animation: fadeIn .15s; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+.modal-content {
+  background: var(--card-glass);
+  backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--border); border-bottom: none;
+  padding: 24px; border-radius: 24px 24px 0 0;
+  width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto;
+  animation: slideUp .22s cubic-bezier(.2,.8,.2,1);
+  box-shadow: 0 -8px 30px rgba(43,27,18,0.15);
+  will-change: transform;
+}
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.modal-header h3 { font-size: 1.2rem; font-weight: 700; }
+.close-btn {
+  background: var(--bg); border: none; width: 32px; height: 32px;
+  border-radius: 50%; cursor: pointer; color: var(--sub); font-size: 1.2rem;
+}
+
+/* Pages */
+.page { display: none; }
+.page.active { display: block; }
+
+/* Person Detail Page (Full Screen) */
+.person-page {
+  position: fixed; inset: 0; z-index: 150; background: var(--bg);
+  overflow-y: auto; display: none; animation: slideRight .22s;
+}
+.person-page.active { display: block; }
+@keyframes slideRight { from{transform:translateX(100%)} to{transform:translateX(0)} }
+.person-header {
+  background: var(--gradient); color: white; padding: 20px;
+  padding-top: 16px; position: sticky; top: 0; z-index: 10;
+}
+.person-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.back-btn {
+  background: rgba(255,255,255,0.22); border: none; color: white;
+  width: 38px; height: 38px; border-radius: 50%; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+  touch-action: manipulation;
+}
+.menu-btn {
+  background: rgba(255,255,255,0.22); border: none; color: white;
+  width: 38px; height: 38px; border-radius: 50%; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-size: 1.3rem;
+  touch-action: manipulation;
+}
+.person-info { display: flex; align-items: center; gap: 14px; }
+.person-avatar {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: rgba(255,255,255,0.25); display: flex;
+  align-items: center; justify-content: center; font-size: 1.8rem;
+  font-weight: 700; border: 3px solid rgba(255,255,255,0.4);
+}
+.person-name { font-size: 1.3rem; font-weight: 700; }
+.person-phone { font-size: 0.85rem; opacity: 0.9; margin-top: 2px; }
+.person-balance {
+  background: rgba(255,255,255,0.18); padding: 14px; border-radius: 14px;
+  margin-top: 16px;
+}
+.person-balance small { font-size: 0.8rem; opacity: 0.9; }
+.person-balance p { font-size: 1.6rem; font-weight: 800; margin-top: 4px; }
+
+/* Dropdown Menu */
+.dropdown-menu {
+  position: absolute; top: 60px; right: 20px;
+  background: var(--card-glass);
+  backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border-radius: 14px; box-shadow: 0 8px 24px rgba(43,27,18,0.18);
+  min-width: 220px; z-index: 20; display: none; overflow: hidden;
+  border: 1px solid var(--border); color: var(--text);
+  transform: scale(0.92) translateY(-6px); opacity: 0;
+  transition: transform .15s cubic-bezier(.2,.8,.2,1), opacity .15s ease;
+  will-change: transform;
+}
+.dropdown-menu.active { display: block; transform: scale(1) translateY(0); opacity: 1; }
+.dropdown-item {
+  padding: 13px 16px; cursor: pointer; display: flex; align-items: center;
+  gap: 10px; font-size: 0.9rem; transition: background .12s; color: var(--text) !important;
+  touch-action: manipulation;
+}
+.dropdown-item:hover { background: var(--primary-light); }
+.dropdown-item.danger { color: var(--danger) !important; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 110px; left: 50%; transform: translateX(-50%);
+  background: #2b1b12; color: white; padding: 12px 22px; border-radius: 24px;
+  z-index: 500; display: none; font-size: 0.9rem;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25); max-width: 90%;
+}
+
+/* Empty State */
+.empty {
+  text-align: center; padding: 40px 20px; color: var(--sub);
+}
+.empty-icon { font-size: 3.5rem; margin-bottom: 12px; opacity: 0.5; }
+
+/* Settings List */
+.setting-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 4px; border-bottom: 1px solid var(--border);
+}
+.setting-item:last-child { border-bottom: none; }
+.setting-info { display: flex; align-items: center; gap: 12px; }
+.setting-icon {
+  width: 38px; height: 38px; border-radius: 10px; background: var(--primary-light);
+  display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+}
+.setting-label { font-weight: 500; }
+.setting-desc { font-size: 0.75rem; color: var(--sub); margin-top: 2px; }
+.picker-trigger {
+  display: flex; align-items: center; gap: 6px; padding: 8px 14px;
+  border-radius: 10px; border: 1.5px solid var(--border); background: var(--bg);
+  color: var(--text); font-weight: 600; font-size: 0.9rem; white-space: nowrap;
+  touch-action: manipulation; transition: border-color .12s, transform .1s ease;
+}
+.picker-trigger:active { transform: scale(0.96); }
+.picker-trigger span { color: var(--sub); font-size: 0.75rem; }
+.picker-option {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 20px; cursor: pointer; font-size: 1.02rem; font-weight: 500;
+  border-bottom: 1px solid var(--border); transition: background .12s;
+  touch-action: manipulation; animation: optionIn .22s ease backwards;
+}
+.picker-option:last-child { border-bottom: none; }
+.picker-option:active { background: var(--primary-light); }
+.picker-radio {
+  width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: border-color .15s;
+}
+.picker-radio.checked { border-color: var(--primary); }
+.picker-radio.checked::after {
+  content: ""; width: 12px; height: 12px; border-radius: 50%;
+  background: var(--gradient); animation: radioPop .18s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes radioPop { from{ transform: scale(0); } to{ transform: scale(1); } }
+@keyframes optionIn { from{ opacity:0; transform: translateY(6px); } to{ opacity:1; transform: translateY(0); } }
+
+/* Toggle Switch */
+.switch { position: relative; display: inline-block; width: 48px; height: 26px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; cursor: pointer; inset: 0;
+  background: #e2d3c6; transition: background .2s; border-radius: 26px;
+}
+.slider:before {
+  position: absolute; content: ""; height: 20px; width: 20px;
+  left: 3px; bottom: 3px; background: white; transition: transform .2s; border-radius: 50%;
+}
+input:checked + .slider { background: var(--primary); }
+input:checked + .slider:before { transform: translateX(22px); }
+
+/* Type Toggle */
+.type-toggle { display: flex; gap: 8px; margin-bottom: 14px; }
+.type-toggle button {
+  flex: 1; padding: 14px; border: 2px solid var(--border);
+  background: var(--bg); color: var(--text); border-radius: 12px;
+  font-weight: 600; cursor: pointer; transition: background .12s, color .12s, border-color .12s; font-size: 0.95rem;
+  touch-action: manipulation;
+}
+.type-toggle button.active-give { background: var(--danger); color: white; border-color: var(--danger); }
+.type-toggle button.active-get { background: var(--success); color: white; border-color: var(--success); }
+
+/* Transaction Item */
+.tx-item {
+  display: flex; align-items: center; padding: 12px 4px;
+  border-bottom: 1px solid var(--border);
+}
+.tx-item:last-child { border-bottom: none; }
+.tx-icon {
+  width: 42px; height: 42px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; margin-right: 12px; flex-shrink: 0;
+}
+.tx-icon.give { background: #ffe1e5; color: var(--danger); }
+.tx-icon.get { background: #fff1cc; color: var(--success); }
+[data-theme="dark"] .tx-icon.give { background: rgba(230,57,80,0.18); }
+[data-theme="dark"] .tx-icon.get { background: rgba(255,179,0,0.18); }
+
+/* Search Bar */
+.search-bar {
+  position: relative; margin-bottom: 14px;
+}
+.search-bar input { padding-left: 42px; }
+.search-bar::before {
+  content: "🔍"; position: absolute; left: 14px; top: 50%;
+  transform: translateY(-50%); font-size: 1rem;
+}
+
+/* Filter Chips */
+.chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px; }
+.chip {
+  padding: 8px 14px; border-radius: 20px; background: var(--card);
+  border: 1.5px solid var(--border); cursor: pointer; font-size: 0.85rem;
+  white-space: nowrap; font-weight: 500; transition: background .12s, color .12s;
+  touch-action: manipulation;
+}
+.chip.active { background: var(--gradient); color: white; border-color: transparent; }
+
+/* Chart */
+.chart-bar { display: flex; align-items: flex-end; height: 140px; gap: 6px; padding: 10px 4px; }
+.bar {
+  flex: 1; background: var(--gradient); border-radius: 6px 6px 0 0;
+  position: relative; min-height: 4px; transition: height .3s;
+}
+.bar-label {
+  position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%);
+  font-size: 0.7rem; color: var(--sub);
+}
+.bar-value {
+  position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+  font-size: 0.7rem; font-weight: 700;
+}
+
+/* Badge */
+.badge {
+  display: inline-block; padding: 3px 8px; border-radius: 10px;
+  font-size: 0.7rem; font-weight: 600; background: var(--primary-light);
+  color: var(--primary);
+}
+
+/* Quick Actions */
+.quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
+.quick-action {
+  background: var(--card); padding: 14px 8px; border-radius: 14px;
+  text-align: center; cursor: pointer; box-shadow: var(--shadow);
+  transition: transform .12s ease; border: 1px solid var(--border);
+  touch-action: manipulation;
+}
+.quick-action:active { transform: scale(0.95); }
+.quick-action .qa-icon { font-size: 1.6rem; margin-bottom: 4px; }
+.quick-action .qa-label { font-size: 0.75rem; font-weight: 500; color: var(--sub); }
+
+/* Section Title */
+.section-title {
+  display: flex; justify-content: space-between; align-items: center;
+  margin: 16px 4px 10px; font-weight: 700; font-size: 0.95rem;
+}
+.section-title a { color: var(--primary); font-size: 0.85rem; font-weight: 500; cursor: pointer; }
+
+/* Emoji Picker */
+.emoji-grid {
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;
+  margin-bottom: 14px;
+}
+.emoji-option {
+  aspect-ratio: 1; border-radius: 12px; background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; cursor: pointer; border: 2px solid transparent;
+  transition: border-color .12s, background .12s; touch-action: manipulation;
+}
+.emoji-option.selected { border-color: var(--primary); background: var(--primary-light); }
+
+/* PIN Screen */
+.pin-screen {
+  position: fixed; inset: 0; z-index: 1000; background: var(--bg);
+  display: none; align-items: center; justify-content: center;
+  flex-direction: column; padding: 20px;
+}
+.pin-screen.active { display: flex; }
+.pin-dots { display: flex; gap: 14px; margin: 30px 0; }
+.pin-dot {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 2px solid var(--primary); transition: background .12s;
+}
+.pin-dot.filled { background: var(--gradient); border-color: transparent; }
+.pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; max-width: 320px; width: 100%; }
+.pin-key {
+  aspect-ratio: 1.3; border-radius: 16px; background: var(--card);
+  border: 1px solid var(--border); font-size: 1.5rem; font-weight: 600; cursor: pointer;
+  color: var(--text); box-shadow: var(--shadow); touch-action: manipulation;
+  transition: transform .1s ease, background .12s;
+}
+.pin-key:active { transform: scale(0.95); background: var(--primary-light); }
+
+</style>
+</head>
+<body>
+
+
+<!-- PIN LOCK SCREEN -->
+<div class="pin-screen" id="pinScreen">
+  <div style="font-size: 3rem; margin-bottom: 10px;">🔐</div>
+  <h2 style="margin-bottom: 8px;">Khata Pro</h2>
+  <p class="text-sub" id="pinMsg">PIN दर्ज करें</p>
+  <div class="pin-dots" id="pinDots">
+    <div class="pin-dot"></div><div class="pin-dot"></div>
+    <div class="pin-dot"></div><div class="pin-dot"></div>
+  </div>
+  <div class="pin-pad">
+    <button class="pin-key" onclick="pinInput(1)">1</button>
+    <button class="pin-key" onclick="pinInput(2)">2</button>
+    <button class="pin-key" onclick="pinInput(3)">3</button>
+    <button class="pin-key" onclick="pinInput(4)">4</button>
+    <button class="pin-key" onclick="pinInput(5)">5</button>
+    <button class="pin-key" onclick="pinInput(6)">6</button>
+    <button class="pin-key" onclick="pinInput(7)">7</button>
+    <button class="pin-key" onclick="pinInput(8)">8</button>
+    <button class="pin-key" onclick="pinInput(9)">9</button>
+    <button class="pin-key" onclick="pinClear()">⌫</button>
+    <button class="pin-key" onclick="pinInput(0)">0</button>
+    <button class="pin-key" style="visibility:hidden"></button>
+  </div>
+  <p style="margin-top: 20px; font-size: 0.8rem; color: var(--sub);">Default PIN: 1234</p>
+</div>
+
+<div class="container">
+  <!-- APP HEADER -->
+  <div class="app-header">
+    <h1>Khata Pro</h1>
+    <div style="display: flex; gap: 8px;">
+      <button class="icon-btn" onclick="toggleTheme()" title="Theme">🌓</button>
+      <button class="icon-btn" onclick="navigate('Settings')" title="Settings">⚙️</button>
+    </div>
+  </div>
+
+  <!-- HOME PAGE -->
+  <div id="pageHome" class="page active">
+    <div class="stats-grid">
+      <div class="stat-card get">
+        <span class="emoji">💰</span>
+        <h3>आपको लेना है</h3>
+        <p id="statGet">₹0</p>
+        <small id="statGetCount">0 लोग</small>
+      </div>
+      <div class="stat-card give">
+        <span class="emoji">💸</span>
+        <h3>आपको देना है</h3>
+        <p id="statGive">₹0</p>
+        <small id="statGiveCount">0 लोग</small>
+      </div>
+      <div class="stat-card net">
+        <span class="emoji">📊</span>
+        <h3>NET BALANCE</h3>
+        <p id="statNet">₹0</p>
+        <small id="statNetLabel">कुल हिसाब</small>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <div class="quick-action" onclick="openAddPersonModal()">
+        <div class="qa-icon">➕</div>
+        <div class="qa-label">नया व्यक्ति</div>
+      </div>
+      <div class="quick-action" onclick="navigate('Reports')">
+        <div class="qa-icon">📊</div>
+        <div class="qa-label">रिपोर्ट</div>
+      </div>
+      <div class="quick-action" onclick="navigate('History')">
+        <div class="qa-icon">📜</div>
+        <div class="qa-label">हिस्ट्री</div>
+      </div>
+      <div class="quick-action" onclick="exportJSON()">
+        <div class="qa-icon">💾</div>
+        <div class="qa-label">बैकअप</div>
+      </div>
+    </div>
+
+    <!-- Today's Summary -->
+    <div class="card">
+      <div class="card-title">📅 आज का हिसाब</div>
+      <div id="todaySummary">
+        <p class="text-sub" style="text-align:center; padding: 10px;">आज कोई एंट्री नहीं</p>
+      </div>
+    </div>
+
+    <!-- Top Debtors -->
+    <div class="section-title">
+      <span>🏆 टॉप 5 लेनदार</span>
+      <a onclick="navigate('Contacts')">सभी देखें →</a>
+    </div>
+    <div class="card" style="padding: 8px 14px;">
+      <div id="topDebtors">
+        <p class="text-sub" style="text-align:center; padding: 10px;">कोई डेटा नहीं</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACTS PAGE -->
+  <div id="pageContacts" class="page">
+    <div class="card">
+      <div class="card-title">👥 मेरे लोग <span class="badge" id="contactCount">0</span></div>
+      <div class="search-bar">
+        <input type="text" id="searchContact" placeholder="नाम या नंबर से खोजें..." oninput="renderContacts()">
+      </div>
+      <div class="chips" id="groupChips">
+        <div class="chip active" onclick="filterGroup('all', this)">सभी</div>
+        <div class="chip" onclick="filterGroup('Family', this)">👨‍👩‍👧 परिवार</div>
+        <div class="chip" onclick="filterGroup('Business', this)">💼 बिज़नेस</div>
+        <div class="chip" onclick="filterGroup('Friends', this)">🤝 दोस्त</div>
+        <div class="chip" onclick="filterGroup('Other', this)">📌 अन्य</div>
+      </div>
+      <div class="chips">
+        <div class="chip active" onclick="sortContacts('name', this)">A-Z</div>
+        <div class="chip" onclick="sortContacts('recent', this)">हालिया</div>
+        <div class="chip" onclick="sortContacts('balance', this)">बैलेंस</div>
+      </div>
+      <div id="contactsList"></div>
+    </div>
+  </div>
+
+  <!-- REPORTS PAGE -->
+  <div id="pageReports" class="page">
+    <div class="card">
+      <div class="card-title">📊 वित्तीय रिपोर्ट</div>
+      <div class="chips">
+        <div class="chip active" onclick="setReportRange('all', this)">सभी</div>
+        <div class="chip" onclick="setReportRange('week', this)">इस हफ्ते</div>
+        <div class="chip" onclick="setReportRange('month', this)">इस महीने</div>
+        <div class="chip" onclick="setReportRange('year', this)">इस साल</div>
+      </div>
+      <div id="reportSummary"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📈 मासिक कैश फ्लो</div>
+      <div class="chart-bar" id="monthlyChart"></div>
+      <div style="height: 24px;"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏆 टॉप 5 लेना है</div>
+      <div id="topGet"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⚠️ टॉप 5 देना है</div>
+      <div id="topGive"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📤 एक्सपोर्ट</div>
+      <button class="btn btn-primary btn-block" onclick="exportCSV()" style="margin-bottom: 8px;">📄 CSV डाउनलोड करें</button>
+      <button class="btn btn-ghost btn-block" onclick="exportJSON()">💾 JSON बैकअप</button>
+    </div>
+  </div>
+
+  <!-- HISTORY PAGE -->
+  <div id="pageHistory" class="page">
+    <div class="card">
+      <div class="card-title">📜 सभी एंट्रीज़ <span class="badge" id="txCount">0</span></div>
+      <div class="search-bar">
+        <input type="text" id="searchTx" placeholder="एंट्री खोजें..." oninput="renderHistory()">
+      </div>
+      <div class="chips">
+        <div class="chip active" onclick="filterTx('all', this)">सभी</div>
+        <div class="chip" onclick="filterTx('give', this)">↑ उधार</div>
+        <div class="chip" onclick="filterTx('get', this)">↓ जमा</div>
+      </div>
+      <div id="historyList"></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS PAGE -->
+  <div id="pageSettings" class="page">
+    <div class="card">
+      <div class="card-title">🎨 Appearance</div>
+      <div class="setting-item">
+        <div class="setting-info">
+          <div class="setting-icon">🌙</div>
+          <div>
+            <div class="setting-label">Dark Mode</div>
+            <div class="setting-desc">आँखों को आराम</div>
+          </div>
+        </div>
+        <label class="switch"><input type="checkbox" id="setDark" onchange="toggleTheme()"><span class="slider"></span></label>
+      </div>
+      <div class="setting-item" onclick="openPicker('lang')" style="cursor:pointer;">
+        <div class="setting-info">
+          <div class="setting-icon">🌐</div>
+          <div>
+            <div class="setting-label">Language</div>
+            <div class="setting-desc">भाषा चुनें</div>
+          </div>
+        </div>
+        <div class="picker-trigger" id="setLangDisplay">हिंदी <span>▾</span></div>
+      </div>
+      <div class="setting-item" onclick="openPicker('currency')" style="cursor:pointer;">
+        <div class="setting-info">
+          <div class="setting-icon">💱</div>
+          <div>
+            <div class="setting-label">Currency</div>
+            <div class="setting-desc">मुद्रा चिन्ह</div>
+          </div>
+        </div>
+        <div class="picker-trigger" id="setCurrencyDisplay">₹ INR <span>▾</span></div>
+      </div>
+      <div class="setting-item" onclick="openPicker('fontSize')" style="cursor:pointer;">
+        <div class="setting-info">
+          <div class="setting-icon">🔤</div>
+          <div>
+            <div class="setting-label">Font Size</div>
+            <div class="setting-desc">अक्षरों का आकार</div>
+          </div>
+        </div>
+        <div class="picker-trigger" id="setFontSizeDisplay">मध्यम <span>▾</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔒 Security</div>
+      <div class="setting-item">
+        <div class="setting-info">
+          <div class="setting-icon">🔐</div>
+          <div>
+            <div class="setting-label">App Lock</div>
+            <div class="setting-desc">PIN से ऐप लॉक करें</div>
+          </div>
+        </div>
+        <label class="switch"><input type="checkbox" id="setLock" onchange="toggleLock()"><span class="slider"></span></label>
+      </div>
+      <div class="setting-item" onclick="changePin()" style="cursor: pointer;">
+        <div class="setting-info">
+          <div class="setting-icon">🔑</div>
+          <div>
+            <div class="setting-label">Change PIN</div>
+            <div class="setting-desc">नया PIN सेट करें</div>
+          </div>
+        </div>
+        <span>›</span>
+      </div>
+      <div class="setting-item" onclick="openChangeOwnerCodeModal()" style="cursor: pointer;">
+        <div class="setting-info">
+          <div class="setting-icon">🔐</div>
+          <div>
+            <div class="setting-label">Owner Edit Lock</div>
+            <div class="setting-desc">Edit/Delete se pehle owner code maangega</div>
+          </div>
+        </div>
+        <span>›</span>
+      </div>
+      <div class="setting-item">
+        <div class="setting-info">
+          <div class="setting-icon">👆</div>
+          <div>
+            <div class="setting-label">Biometric Lock</div>
+            <div class="setting-desc">फिंगरप्रिंट / Face ID</div>
+          </div>
+        </div>
+        <label class="switch"><input type="checkbox" id="setBio" onchange="saveSetting('bio', this.checked)"><span class="slider"></span></label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔔 Notifications</div>
+      <div class="setting-item">
+        <div class="setting-info">
+          <div class="setting-icon">🔔</div>
+          <div>
+            <div class="setting-label">Payment Reminders</div>
+            <div class="setting-desc">उधार याद दिलाने के लिए</div>
+          </div>
+        </div>
+        <label class="switch"><input type="checkbox" id="setReminder" onchange="saveSetting('reminder', this.checked)"><span class="slider"></span></label>
+      </div>
+      <div class="setting-item">
+        <div class="setting-info">
+          <div class="setting-icon">📧</div>
+          <div>
+            <div class="setting-label">Email Reports</div>
+            <div class="setting-desc">साप्ताहिक रिपोर्ट ईमेल पर</div>
+          </div>
+        </div>
+        <label class="switch"><input type="checkbox" id="setEmail" onchange="saveSetting('email', this.checked)"><span class="slider"></span></label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📦 Backup & Restore</div>
+      <button class="btn btn-primary btn-block" onclick="exportJSON()" style="margin-bottom: 8px;">💾 बैकअप डाउनलोड</button>
+      <button class="btn btn-ghost btn-block" onclick="document.getElementById('importFile').click()" style="margin-bottom: 8px;">📂 रिस्टोर करें</button>
+      <input type="file" id="importFile" style="display:none" accept=".json" onchange="importJSON(event)">
+      <button class="btn btn-ghost btn-block" onclick="shareApp()">📤 ऐप शेयर करें</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">ℹ️ About</div>
+      <div class="setting-item" onclick="openInstagram()" style="cursor: pointer;">
+        <div class="setting-info">
+          <div class="setting-icon" style="background:linear-gradient(45deg,#F58529,#DD2A7B,#8134AF,#515BD4); display:flex; align-items:center; justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="20" height="20" rx="5" stroke="white" stroke-width="2"/>
+              <circle cx="12" cy="12" r="4.2" stroke="white" stroke-width="2"/>
+              <circle cx="17.4" cy="6.6" r="1.2" fill="white"/>
+            </svg>
+          </div>
+          <div>
+            <div class="setting-label">Instagram</div>
+          </div>
+        </div>
+        <span>›</span>
+      </div>
+      <div class="setting-item" onclick="openSupport()" style="cursor: pointer;">
+        <div class="setting-info">
+          <div class="setting-icon" style="background:#fff; display:flex; align-items:center; justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path fill="#EA4335" d="M12 13.2 3 6.6V18a1.5 1.5 0 0 0 1.5 1.5h1V8.6l6.5 4.8 6.5-4.8v10.9h1A1.5 1.5 0 0 0 21 18V6.6l-9 6.6Z"/>
+              <path fill="#34A853" d="M4.5 19.5h1V8.6l-2-1.47V18a1.5 1.5 0 0 0 1 1.5Z"/>
+              <path fill="#4285F4" d="M18.5 19.5h1a1.5 1.5 0 0 0 1-1.5V7.13l-2 1.47Z"/>
+              <path fill="#FBBC05" d="M3 6.6l1.5 1.13 2-1.47L12 10 3 6.6Z" opacity="0"/>
+              <path fill="#C5221F" d="M3 6.6a1.5 1.5 0 0 1 2.3-1.26L12 9.8l6.7-4.46A1.5 1.5 0 0 1 21 6.6l-9 6.6-9-6.6Z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="setting-label">Gmail</div>
+          </div>
+        </div>
+        <span>›</span>
+      </div>
+      <div class="setting-item">
+        <div class="setting-info">
+          <div class="setting-icon">📱</div>
+          <div>
+            <div class="setting-label">Version</div>
+            <div class="setting-desc">Khata Pro v2.0</div>
+          </div>
+        </div>
+      </div>
+      <div class="setting-item" onclick="rateApp()" style="cursor: pointer;">
+        <div class="setting-info">
+          <div class="setting-icon">⭐</div>
+          <div>
+            <div class="setting-label">Rate Us</div>
+            <div class="setting-desc">5 स्टार दें</div>
+          </div>
+        </div>
+        <span>›</span>
+      </div>
+      <div class="setting-item" onclick="openSupport()" style="cursor: pointer;">
+        <div class="setting-info">
+          <div class="setting-icon" style="background:#fff; display:flex; align-items:center; justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path fill="#EA4335" d="M12 13.2 3 6.6V18a1.5 1.5 0 0 0 1.5 1.5h1V8.6l6.5 4.8 6.5-4.8v10.9h1A1.5 1.5 0 0 0 21 18V6.6l-9 6.6Z"/>
+              <path fill="#34A853" d="M4.5 19.5h1V8.6l-2-1.47V18a1.5 1.5 0 0 0 1 1.5Z"/>
+              <path fill="#4285F4" d="M18.5 19.5h1a1.5 1.5 0 0 0 1-1.5V7.13l-2 1.47Z"/>
+              <path fill="#C5221F" d="M3 6.6a1.5 1.5 0 0 1 2.3-1.26L12 9.8l6.7-4.46A1.5 1.5 0 0 1 21 6.6l-9 6.6-9-6.6Z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="setting-label">Gmail</div>
+          </div>
+        </div>
+        <span>›</span>
+      </div>
+    </div>
+
+    <div class="card" style="border: 2px solid var(--danger);">
+      <div class="card-title" style="color: var(--danger);">⚠️ Danger Zone</div>
+      <button class="btn btn-danger btn-block" onclick="requireOwnerAuth(clearAllData, true)">🗑️ सारा डेटा मिटाएं</button>
+    </div>
+
+    <div style="text-align:center; padding: 24px 0 8px; font-size: 11px; color: var(--sub);">
+      © 2026 Made by Ayush Singh
+    </div>
+  </div>
+</div>
+
+<!-- FAB -->
+<button class="fab" onclick="openAddPersonModal()">+</button>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="nav-item active" onclick="navigate('Home', this)">
+    <div class="nav-icon">🏠</div>
+    <span>होम</span>
+  </div>
+  <div class="nav-item" onclick="navigate('Contacts', this)">
+    <div class="nav-icon">👥</div>
+    <span>लोग</span>
+  </div>
+  <div class="nav-item" onclick="navigate('Reports', this)">
+    <div class="nav-icon">📊</div>
+    <span>रिपोर्ट</span>
+  </div>
+  <div class="nav-item" onclick="navigate('History', this)">
+    <div class="nav-icon">📜</div>
+    <span>हिस्ट्री</span>
+  </div>
+  <div class="nav-item" onclick="navigate('Settings', this)">
+    <div class="nav-icon">⚙️</div>
+    <span>सेटिंग</span>
+  </div>
+</div>
+
+<!-- PERSON DETAIL PAGE (Full Screen) -->
+<div class="person-page" id="personPage">
+  <div class="person-header">
+    <div class="person-header-top">
+      <button class="back-btn" onclick="closePersonPage()">←</button>
+      <button class="menu-btn" onclick="togglePersonMenu(event)">⋮</button>
+    </div>
+    <div class="dropdown-menu" id="personMenu">
+      <div class="dropdown-item" onclick="requireOwnerAuth(editPerson)">✏️ व्यक्ति एडिट करें</div>
+      <div class="dropdown-item" onclick="changePersonEmoji()">🎭 इमोजी/अवतार बदलें</div>
+      <div class="dropdown-item" onclick="setCreditLimit()">💳 क्रेडिट लिमिट सेट करें</div>
+      <div class="dropdown-item" onclick="toggleFavorite()">⭐ फेवरेट में जोड़ें</div>
+      <div class="dropdown-item" onclick="shareWhatsApp()">📱 WhatsApp पर भेजें</div>
+      <div class="dropdown-item" onclick="shareSMS()">💬 SMS भेजें</div>
+      <div class="dropdown-item" onclick="callPerson()">📞 कॉल करें</div>
+      <div class="dropdown-item" onclick="exportPersonCSV()">📄 इसका डेटा एक्सपोर्ट</div>
+      <div class="dropdown-item" onclick="requireOwnerAuth(archivePerson, true)">📦 आर्काइव करें</div>
+      <div class="dropdown-item" onclick="printStatement()">📄 स्टेटमेंट डाउनलोड (PDF)</div>
+      <div class="dropdown-item" onclick="addNoteToPerson()">📝 नोट जोड़ें</div>
+      <div class="dropdown-item danger" onclick="requireOwnerAuth(deletePerson, true)">🗑️ व्यक्ति हटाएं</div>
+    </div>
+    <div class="person-info">
+      <div class="person-avatar" id="pAvatar">R</div>
+      <div>
+        <div class="person-name" id="pName">Name</div>
+        <div class="person-phone" id="pPhone">📞 Phone</div>
+      </div>
+    </div>
+    <div class="person-balance">
+      <small id="pBalLabel">आपको लेना है</small>
+      <p id="pBalance">₹0</p>
+    </div>
+  </div>
+
+  <div style="padding: 16px;">
+    <button class="btn btn-primary btn-block" onclick="openTxModal()" style="margin-bottom: 16px; padding: 16px;">
+      ➕ नई एंट्री जोड़ें
+    </button>
+
+    <!-- Person Stats -->
+    <div class="stats-grid" style="margin-bottom: 16px;">
+      <div class="stat-card give" style="padding: 14px;">
+        <h3 style="font-size: 0.7rem;">कुल उधार दिया</h3>
+        <p id="pTotalGive" style="font-size: 1.2rem;">₹0</p>
+      </div>
+      <div class="stat-card get" style="padding: 14px;">
+        <h3 style="font-size: 0.7rem;">कुल जमा लिया</h3>
+        <p id="pTotalGet" style="font-size: 1.2rem;">₹0</p>
+      </div>
+    </div>
+
+    <!-- Person Note -->
+    <div class="card" id="personNoteCard" style="display: none;">
+      <div class="card-title">📝 नोट</div>
+      <p id="personNoteText" style="color: var(--sub); font-size: 0.9rem;"></p>
+    </div>
+
+    <!-- Transaction History -->
+    <div class="section-title">
+      <span>💼 हिसाब की लिस्ट</span>
+      <span class="badge" id="pTxCount">0</span>
+    </div>
+    <div class="card" style="padding: 8px 14px;">
+      <div id="personTxList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Add Person -->
+<div id="modalPerson" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="personModalTitle">➕ नया व्यक्ति जोड़ें</h3>
+      <button class="close-btn" onclick="closeModal('modalPerson')">×</button>
+    </div>
+    <input type="hidden" id="editPersonId">
+    
+    <label class="input-group">
+      <span>🎭 अवतार/इमोजी चुनें</span>
+    </label>
+    <div class="emoji-grid" id="emojiPicker">
+      <div class="emoji-option selected" data-emoji="👤" onclick="selectEmoji(this)">👤</div>
+      <div class="emoji-option" data-emoji="👨" onclick="selectEmoji(this)">👨</div>
+      <div class="emoji-option" data-emoji="👩" onclick="selectEmoji(this)">👩</div>
+      <div class="emoji-option" data-emoji="🧑" onclick="selectEmoji(this)">🧑</div>
+      <div class="emoji-option" data-emoji="👴" onclick="selectEmoji(this)">👴</div>
+      <div class="emoji-option" data-emoji="👵" onclick="selectEmoji(this)">👵</div>
+      <div class="emoji-option" data-emoji="🧔" onclick="selectEmoji(this)">🧔</div>
+      <div class="emoji-option" data-emoji="👸" onclick="selectEmoji(this)">👸</div>
+      <div class="emoji-option" data-emoji="🤵" onclick="selectEmoji(this)">🤵</div>
+      <div class="emoji-option" data-emoji="💼" onclick="selectEmoji(this)">💼</div>
+      <div class="emoji-option" data-emoji="🏪" onclick="selectEmoji(this)">🏪</div>
+      <div class="emoji-option" data-emoji="🛒" onclick="selectEmoji(this)">🛒</div>
+    </div>
+
+    <div class="input-group">
+      <label>नाम *</label>
+      <input type="text" id="pNameInput" placeholder="जैसे: राहुल शर्मा">
+    </div>
+    <div class="input-group">
+      <label>मोबाइल नंबर</label>
+      <input type="tel" id="pPhoneInput" placeholder="10 अंकों का नंबर" maxlength="10">
+    </div>
+    <div class="input-group">
+      <label>ग्रुप</label>
+      <select id="pGroupInput">
+        <option value="Other">📌 अन्य</option>
+        <option value="Family">👨‍👩‍👧 परिवार</option>
+        <option value="Friends">🤝 दोस्त</option>
+        <option value="Business">💼 बिज़नेस</option>
+      </select>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="savePerson()">✓ सेव करें</button>
+  </div>
+</div>
+
+<!-- MODAL: Add Transaction -->
+<div id="modalTx" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>💰 नई एंट्री</h3>
+      <button class="close-btn" onclick="closeModal('modalTx')">×</button>
+    </div>
+    <p id="txPersonLabel" style="color: var(--primary); font-weight: 600; margin-bottom: 14px;"></p>
+    <input type="hidden" id="txPersonId">
+    
+    <label class="input-group"><span>किस तरह की एंट्री?</span></label>
+    <div class="type-toggle">
+      <button id="btnGive" class="active-give" onclick="setTxType('give')">↑ उधार दिया</button>
+      <button id="btnGet" onclick="setTxType('get')">↓ जमा लिया</button>
+    </div>
+
+    <div class="input-group">
+      <label>रकम (Amount) *</label>
+      <input type="number" id="txAmount" placeholder="₹ कितने रुपये?" inputmode="numeric">
+    </div>
+    <div class="input-group">
+      <label>तारीख</label>
+      <input type="date" id="txDate">
+    </div>
+    <div class="input-group">
+      <label>नोट (Optional)</label>
+      <textarea id="txNote" placeholder="जैसे: सामान का बिल" rows="2"></textarea>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="saveTx()">✓ एंट्री सेव करें</button>
+  </div>
+</div>
+
+<!-- MODAL: Change PIN -->
+<div id="modalPin" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>🔑 नया PIN सेट करें</h3>
+      <button class="close-btn" onclick="closeModal('modalPin')">×</button>
+    </div>
+    <div class="input-group">
+      <label>पुराना PIN</label>
+      <input type="password" id="oldPin" maxlength="4" placeholder="••••">
+    </div>
+    <div class="input-group">
+      <label>नया PIN (4 अंक)</label>
+      <input type="password" id="newPin" maxlength="4" placeholder="••••">
+    </div>
+    <div class="input-group">
+      <label>नया PIN दोबारा</label>
+      <input type="password" id="confirmPin" maxlength="4" placeholder="••••">
+    </div>
+    <button class="btn btn-primary btn-block" onclick="saveNewPin()">✓ PIN बदलें</button>
+  </div>
+</div>
+
+<div id="modalOwnerAuth" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>🔐 Owner Verification</h3>
+      <button class="close-btn" onclick="cancelOwnerAuth()">×</button>
+    </div>
+    <p style="font-size: 0.85rem; color: var(--sub); margin-bottom: 14px;">
+      Ye edit/delete sirf owner kar sakta hai. Apna 4-digit owner code daalo.
+    </p>
+    <div class="input-group">
+      <label>Owner Code</label>
+      <input type="password" id="ownerAuthInput" maxlength="4" inputmode="numeric" placeholder="••••" style="text-align:center; font-size:1.4rem; letter-spacing:8px;">
+    </div>
+    <div id="ownerAuthError" style="color: var(--danger); font-size: 0.8rem; margin-bottom: 10px; min-height: 16px;"></div>
+    <button class="btn btn-primary btn-block" onclick="submitOwnerAuth()">✓ Verify karo</button>
+  </div>
+</div>
+
+<div id="modalOwnerCode" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>🔐 Owner Code Badlo</h3>
+      <button class="close-btn" onclick="closeModal('modalOwnerCode')">×</button>
+    </div>
+    <p style="font-size: 0.8rem; color: var(--sub); margin-bottom: 14px;">
+      Naya code khali chhod ke save karoge to owner-lock poori tarah hat jayega (koi bhi edit kar sakega).
+    </p>
+    <div class="input-group">
+      <label>Purana Owner Code</label>
+      <input type="password" id="ownerOldCode" maxlength="4" inputmode="numeric" placeholder="••••">
+    </div>
+    <div class="input-group">
+      <label>Naya Owner Code (4 digit, ya khali)</label>
+      <input type="password" id="ownerNewCode" maxlength="4" inputmode="numeric" placeholder="••••">
+    </div>
+    <div class="input-group">
+      <label>Naya Code Dobara</label>
+      <input type="password" id="ownerNewCode2" maxlength="4" inputmode="numeric" placeholder="••••">
+    </div>
+    <div id="ownerCodeError" style="color: var(--danger); font-size: 0.8rem; margin-bottom: 10px; min-height: 16px;"></div>
+    <button class="btn btn-primary btn-block" onclick="saveOwnerCode()">✓ Save karo</button>
+  </div>
+</div>
+
+<!-- MODAL: Custom Confirm (themed replacement for browser confirm()) -->
+<div id="modalConfirm" class="modal">
+  <div class="modal-content" style="text-align:center;">
+    <div id="confirmIcon" style="font-size: 2.6rem; margin-bottom: 6px;">⚠️</div>
+    <h3 id="confirmTitle" style="margin-bottom: 10px;">पक्का?</h3>
+    <p id="confirmMessage" style="color: var(--sub); font-size: 0.92rem; margin-bottom: 22px; white-space: pre-line; line-height: 1.5;"></p>
+    <div style="display:flex; gap: 10px;">
+      <button class="btn btn-ghost btn-block" onclick="confirmNo()">रद्द करें</button>
+      <button class="btn btn-danger btn-block" id="confirmOkBtn" onclick="confirmYes()">हाँ, पक्का</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Emoji Change -->
+<div id="modalEmoji" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>🎭 नया अवतार चुनें</h3>
+      <button class="close-btn" onclick="closeModal('modalEmoji')">×</button>
+    </div>
+    <div class="emoji-grid" id="emojiPicker2"></div>
+  </div>
+</div>
+
+<!-- MODAL: Credit Limit -->
+<div id="modalLimit" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>💳 क्रेडिट लिमिट</h3>
+      <button class="close-btn" onclick="closeModal('modalLimit')">×</button>
+    </div>
+    <div class="input-group">
+      <label>अधिकतम उधार सीमा (₹)</label>
+      <input type="number" id="creditLimitInput" placeholder="जैसे: 50000">
+    </div>
+    <button class="btn btn-primary btn-block" onclick="saveCreditLimit()">✓ सेव करें</button>
+  </div>
+</div>
+
+<!-- MODAL: Note -->
+<div id="modalNote" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>📝 नोट जोड़ें</h3>
+      <button class="close-btn" onclick="closeModal('modalNote')">×</button>
+    </div>
+    <div class="input-group">
+      <label>व्यक्ति के बारे में नोट</label>
+      <textarea id="personNoteInput" rows="4" placeholder="जैसे: दुकान का मालिक, भरोसेमंद..."></textarea>
+    </div>
+    <button class="btn btn-primary btn-block" onclick="savePersonNote()">✓ सेव करें</button>
+  </div>
+</div>
+
+<div id="modalPicker" class="modal">
+  <div class="modal-content" style="padding: 8px 0 24px;">
+    <div class="modal-header" style="padding: 0 20px; margin-bottom: 6px;">
+      <h3 id="pickerTitle">चुनें</h3>
+      <button class="close-btn" onclick="closeModal('modalPicker')">×</button>
+    </div>
+    <div id="pickerOptions"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============ STATE ============
+let state = {
+  persons: [], transactions: [],
+  settings: {
+    theme: 'light', currency: '₹', lang: 'hi', fontSize: '15px',
+    lock: false, pin: '1234', bio: false, reminder: false, email: false
+  }
+};
+let currentPersonId = null;
+let currentTxType = 'give';
+let currentFilter = 'all';
+let currentGroup = 'all';
+let currentSort = 'name';
+let currentTxFilter = 'all';
+let currentReportRange = 'all';
+let selectedEmoji = '👤';
+let pinBuffer = '';
+let pinMode = 'unlock'; // unlock | setOld | setNew
+
+const ALL_EMOJIS = ['👤','👨','👩','🧑','👴','👵','🧔','👸','🤵','💼','🏪','🛒','👨‍💼','👩‍💼','👨‍🌾','👩‍🌾','👨‍🍳','👩‍🍳','👨‍🏫','👩‍🏫','👨‍⚕️','👩‍⚕️','🧒','👶','🦸','🦹','🧙','🧚','🤠','🥷','🎅','🤶'];
+
+// ============ STORAGE ============
+function loadState() {
+  const s = localStorage.getItem('khataProV3');
+  if (s) state = JSON.parse(s);
+}
+function saveState() { localStorage.setItem('khataProV3', JSON.stringify(state)); }
+function saveSetting(k, v) { state.settings[k] = v; saveState(); applySettings(); if (typeof syncOverdueToApp === 'function') syncOverdueToApp(); showToast('✓ सेव हो गया'); }
+
+// ============ UTILS ============
+function uid() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 6); }
+function esc(s) {
+  // Escapes user-supplied text before it's inserted into innerHTML, to prevent XSS
+  // (e.g. someone naming a contact "<img src=x onerror=...>").
+  return String(s ?? '').replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+function safeFileName(s) {
+  // Strips path separators / HTML-unsafe characters so a contact name can never
+  // escape the intended filename (e.g. "../../evil" or embedded quotes/tags).
+  return String(s || 'khata').replace(/[^a-zA-Z0-9अ-ह]+/g, '_').replace(/^_+|_+$/g, '') || 'khata';
+}
+function fmt(n) { return state.settings.currency + Number(n).toLocaleString('en-IN'); }
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerText = msg; t.style.display = 'block';
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.style.display = 'none', 2200);
+}
+function getColor(str) {
+  const colors = ['#ef4444','#f97316','#10b981','#06b6d4','#2563eb','#8b5cf6','#ec4899','#14b8a6','#f59e0b','#6366f1'];
+  let h = 0; for (let i = 0; i < str.length; i++) h = str.charCodeAt(i) + ((h << 5) - h);
+  return colors[Math.abs(h) % colors.length];
+}
+function formatDate(d) {
+  const dt = new Date(d);
+  return dt.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+}
+function getBalance(pid) {
+  return state.transactions.filter(t => t.personId === pid)
+    .reduce((a, t) => a + (t.type === 'give' ? t.amount : -t.amount), 0);
+}
+function getLastActivity(pid) {
+  const txs = state.transactions.filter(t => t.personId === pid);
+  if (txs.length === 0) return 0;
+  return Math.max(...txs.map(t => new Date(t.date).getTime()));
+}
+
+// ============ THEME & SETTINGS ============
+function toggleTheme() {
+  state.settings.theme = state.settings.theme === 'light' ? 'dark' : 'light';
+  saveState(); applySettings();
+}
+const PICKER_OPTIONS = {
+  lang: { title: '🌐 भाषा चुनें', options: [['hi','हिंदी'],['en','English']] },
+  currency: { title: '💱 मुद्रा चुनें', options: [['₹','₹ INR'],['$','$ USD'],['€','€ EUR'],['£','£ GBP']] },
+  fontSize: { title: '🔤 फॉन्ट साइज़', options: [['14px','छोटा'],['15px','मध्यम'],['17px','बड़ा']] }
+};
+function pickerLabel(type, value) {
+  const found = PICKER_OPTIONS[type].options.find(o => o[0] === value);
+  return found ? found[1] : value;
+}
+function syncPickerDisplays() {
+  document.getElementById('setLangDisplay').innerHTML = pickerLabel('lang', state.settings.lang) + ' <span>▾</span>';
+  document.getElementById('setCurrencyDisplay').innerHTML = pickerLabel('currency', state.settings.currency) + ' <span>▾</span>';
+  document.getElementById('setFontSizeDisplay').innerHTML = pickerLabel('fontSize', state.settings.fontSize) + ' <span>▾</span>';
+}
+function openPicker(type) {
+  const cfg = PICKER_OPTIONS[type];
+  const current = state.settings[type];
+  document.getElementById('pickerTitle').textContent = cfg.title;
+  document.getElementById('pickerOptions').innerHTML = cfg.options.map(([val, label], i) => `
+    <div class="picker-option" style="animation-delay:${i * 0.03}s" onclick="selectPickerOption('${type}','${val}')">
+      <span>${label}</span>
+      <div class="picker-radio ${val === current ? 'checked' : ''}"></div>
+    </div>`).join('');
+  document.getElementById('modalPicker').classList.add('active');
+}
+function selectPickerOption(type, value) {
+  saveSetting(type, value);
+  syncPickerDisplays();
+  setTimeout(() => closeModal('modalPicker'), 140);
+}
+
+function applySettings() {
+  document.documentElement.setAttribute('data-theme', state.settings.theme);
+  document.documentElement.style.fontSize = state.settings.fontSize;
+  document.getElementById('setDark').checked = state.settings.theme === 'dark';
+  syncPickerDisplays();
+  document.getElementById('setLock').checked = state.settings.lock;
+  document.getElementById('setBio').checked = state.settings.bio;
+  document.getElementById('setReminder').checked = state.settings.reminder;
+  document.getElementById('setEmail').checked = state.settings.email;
+}
+
+// ============ NAVIGATION ============
+function navigate(page, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page' + page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) {
+    el.classList.add('active');
+  } else {
+    const idx = ['Home','Contacts','Reports','History','Settings'].indexOf(page);
+    if (idx >= 0) document.querySelectorAll('.nav-item')[idx].classList.add('active');
+  }
+  window.scrollTo(0, 0);
+  if (page === 'Reports') renderReports();
+  if (page === 'History') renderHistory();
+  if (page === 'Contacts') renderContacts();
+  if (page === 'Home') renderHome();
+}
+
+// ============ PIN LOCK ============
+function showPinScreen(mode) {
+  pinMode = mode;
+  pinBuffer = '';
+  updatePinDots();
+  document.getElementById('pinMsg').innerText = 
+    mode === 'unlock' ? 'PIN दर्ज करें' : 
+    mode === 'setOld' ? 'पुराना PIN दर्ज करें' : 'नया PIN दर्ज करें';
+  document.getElementById('pinScreen').classList.add('active');
+}
+function pinInput(n) {
+  if (pinBuffer.length >= 4) return;
+  pinBuffer += n;
+  updatePinDots();
+  if (pinBuffer.length === 4) setTimeout(validatePin, 200);
+}
+function pinClear() {
+  pinBuffer = pinBuffer.slice(0, -1);
+  updatePinDots();
+}
+function updatePinDots() {
+  document.querySelectorAll('#pinDots .pin-dot').forEach((d, i) => {
+    d.classList.toggle('filled', i < pinBuffer.length);
+  });
+}
+function validatePin() {
+  if (pinMode === 'unlock') {
+    if (pinBuffer === state.settings.pin) {
+      document.getElementById('pinScreen').classList.remove('active');
+    } else {
+      showToast('❌ गलत PIN!');
+      pinBuffer = '';
+      updatePinDots();
+    }
+  }
+}
+function toggleLock() {
+  state.settings.lock = document.getElementById('setLock').checked;
+  saveState();
+  if (state.settings.lock) showToast('🔒 App Lock ON');
+  else showToast('🔓 App Lock OFF');
+}
+function changePin() {
+  document.getElementById('oldPin').value = '';
+  document.getElementById('newPin').value = '';
+  document.getElementById('confirmPin').value = '';
+  document.getElementById('modalPin').classList.add('active');
+}
+function saveNewPin() {
+  const old = document.getElementById('oldPin').value;
+  const n1 = document.getElementById('newPin').value;
+  const n2 = document.getElementById('confirmPin').value;
+  if (old !== state.settings.pin) return showToast('❌ पुराना PIN गलत है');
+  if (n1.length !== 4 || !/^\d{4}$/.test(n1)) return showToast('❌ PIN 4 अंक का होना चाहिए');
+  if (n1 !== n2) return showToast('❌ नया PIN मेल नहीं खाया');
+  state.settings.pin = n1;
+  saveState();
+  closeModal('modalPin');
+  showToast('✓ PIN बदल दिया गया!');
+}
+
+// ============ ADD PERSON ============
+function openAddPersonModal() {
+  document.getElementById('editPersonId').value = '';
+  document.getElementById('personModalTitle').innerText = '➕ नया व्यक्ति जोड़ें';
+  document.getElementById('pNameInput').value = '';
+  document.getElementById('pPhoneInput').value = '';
+  document.getElementById('pGroupInput').value = 'Other';
+  selectedEmoji = '👤';
+  document.querySelectorAll('#emojiPicker .emoji-option').forEach(e => {
+    e.classList.toggle('selected', e.dataset.emoji === '👤');
+  });
+  document.getElementById('modalPerson').classList.add('active');
+  setTimeout(() => document.getElementById('pNameInput').focus(), 300);
+}
+function selectEmoji(el) {
+  document.querySelectorAll('#emojiPicker .emoji-option').forEach(e => e.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedEmoji = el.dataset.emoji;
+}
+function savePerson() {
+  const name = document.getElementById('pNameInput').value.trim();
+  const phone = document.getElementById('pPhoneInput').value.trim();
+  const group = document.getElementById('pGroupInput').value;
+  if (!name) return showToast('⚠️ नाम डालना ज़रूरी है!');
+  
+  const id = document.getElementById('editPersonId').value;
+  if (id) {
+    const p = state.persons.find(x => x.id === id);
+    p.name = name; p.phone = phone; p.group = group; p.emoji = selectedEmoji;
+  } else {
+    state.persons.push({
+      id: uid(), name, phone, group, emoji: selectedEmoji,
+      createdAt: Date.now(), favorite: false, archived: false,
+      creditLimit: 0, note: ''
+    });
+  }
+  saveState();
+  closeModal('modalPerson');
+  renderAll();
+  syncOverdueToApp();
+  showToast('✓ व्यक्ति सेव हो गया!');
+}
+
+// ============ CONTACTS LIST ============
+function filterGroup(g, el) {
+  currentGroup = g;
+  document.querySelectorAll('#groupChips .chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderContacts();
+}
+function sortContacts(s, el) {
+  currentSort = s;
+  el.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderContacts();
+}
+function renderContacts() {
+  const search = (document.getElementById('searchContact').value || '').toLowerCase();
+  let list = state.persons.filter(p => !p.archived);
+  if (currentGroup !== 'all') list = list.filter(p => p.group === currentGroup);
+  if (search) list = list.filter(p => p.name.toLowerCase().includes(search) || (p.phone && p.phone.includes(search)));
+  
+  if (currentSort === 'name') list.sort((a,b) => a.name.localeCompare(b.name));
+  else if (currentSort === 'recent') list.sort((a,b) => getLastActivity(b.id) - getLastActivity(a.id));
+  else if (currentSort === 'balance') list.sort((a,b) => Math.abs(getBalance(b.id)) - Math.abs(getBalance(a.id)));
+  
+  document.getElementById('contactCount').innerText = list.length;
+  const container = document.getElementById('contactsList');
+  
+  if (list.length === 0) {
+    container.innerHTML = `<div class="empty">
+      <div class="empty-icon">👥</div>
+      <p>${state.persons.length === 0 ? 'कोई व्यक्ति नहीं है<br><strong>+ बटन दबाकर जोड़ें</strong>' : 'कोई रिज़ल्ट नहीं'}</p>
+    </div>`;
+    return;
+  }
+  
+  container.innerHTML = list.map(p => {
+    const bal = getBalance(p.id);
+    const color = getColor(p.name);
+    const balText = bal === 0 ? 'कोई हिसाब नहीं' : (bal > 0 ? 'लेना है' : 'देना है');
+    const balClass = bal > 0 ? 'text-success' : bal < 0 ? 'text-danger' : 'text-sub';
+    const fav = p.favorite ? '⭐ ' : '';
+    return `<div class="list-item" onclick="openPersonPage('${p.id}')" style="flex-wrap: wrap;">
+      <div class="flex">
+        <div class="avatar" style="background:${color}; font-size: 1.5rem;">${p.emoji || p.name.charAt(0).toUpperCase()}</div>
+        <div class="flex-col">
+          <strong>${fav}${esc(p.name)}</strong>
+          <small class="text-sub">${esc(p.phone) || 'नंबर नहीं'} • ${esc(p.group)}</small>
+        </div>
+      </div>
+      <div class="text-right ${balClass}">
+        <strong>${bal === 0 ? '—' : fmt(Math.abs(bal))}</strong><br>
+        <small>${balText}</small>
+      </div>
+      <div style="width:100%; display:flex; gap:8px; margin-top:8px; padding-top:8px; border-top:1px solid var(--border);" onclick="event.stopPropagation()">
+        <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="quickCall('${p.id}')">📞 Call</button>
+        <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="quickWhatsApp('${p.id}')">💬 WhatsApp</button>
+        <button class="btn btn-ghost btn-sm" style="flex:1;" onclick="quickSMS('${p.id}')">✉️ Message</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function quickCall(pid) {
+  const p = state.persons.find(x => x.id === pid);
+  if (!p || !p.phone) return showToast('⚠️ नंबर नहीं है');
+  window.location.href = `tel:${p.phone}`;
+}
+function quickWhatsApp(pid) {
+  const p = state.persons.find(x => x.id === pid);
+  if (!p || !p.phone) return showToast('⚠️ नंबर नहीं है');
+  const bal = getBalance(pid);
+  const msg = bal >= 0
+    ? `नमस्ते ${p.name} जी, aapka ${fmt(Math.abs(bal))} udhar baki hai. Kripya clear kar dena. Dhanyawad!`
+    : `नमस्ते ${p.name} जी, mujhe aapko ${fmt(Math.abs(bal))} dena hai — ye reminder ke liye.`;
+  const phone = '91' + p.phone.replace(/\D/g, '');
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+function quickSMS(pid) {
+  const p = state.persons.find(x => x.id === pid);
+  if (!p || !p.phone) return showToast('⚠️ नंबर नहीं है');
+  const bal = getBalance(pid);
+  const msg = `Hi ${p.name}, aapka balance: ${fmt(Math.abs(bal))} (${bal >= 0 ? 'dena hai' : 'lena hai'})`;
+  window.location.href = `sms:${p.phone}?body=${encodeURIComponent(msg)}`;
+}
+
+// ============ PERSON DETAIL PAGE ============
+function openPersonPage(pid) {
+  currentPersonId = pid;
+  const p = state.persons.find(x => x.id === pid);
+  if (!p) return;
+  
+  document.getElementById('pAvatar').innerText = p.emoji || p.name.charAt(0).toUpperCase();
+  document.getElementById('pAvatar').style.background = getColor(p.name);
+  document.getElementById('pName').innerText = (p.favorite ? '⭐ ' : '') + p.name;
+  document.getElementById('pPhone').innerText = p.phone ? '📞 ' + p.phone : 'कोई नंबर नहीं';
+  
+  if (p.note) {
+    document.getElementById('personNoteCard').style.display = 'block';
+    document.getElementById('personNoteText').innerText = p.note;
+  } else {
+    document.getElementById('personNoteCard').style.display = 'none';
+  }
+  
+  updatePersonBalance();
+  renderPersonTx();
+  document.getElementById('personPage').classList.add('active');
+  document.getElementById('personMenu').classList.remove('active');
+}
+function closePersonPage() {
+  document.getElementById('personPage').classList.remove('active');
+  renderAll();
+}
+function updatePersonBalance() {
+  const bal = getBalance(currentPersonId);
+  document.getElementById('pBalance').innerText = bal === 0 ? '₹0' : fmt(Math.abs(bal));
+  document.getElementById('pBalLabel').innerText = 
+    bal > 0 ? 'आपको लेना है' : bal < 0 ? 'आपको देना है' : 'कोई हिसाब नहीं';
+  
+  const txs = state.transactions.filter(t => t.personId === currentPersonId);
+  const totalGive = txs.filter(t => t.type === 'give').reduce((a,t) => a + t.amount, 0);
+  const totalGet = txs.filter(t => t.type === 'get').reduce((a,t) => a + t.amount, 0);
+  document.getElementById('pTotalGive').innerText = fmt(totalGive);
+  document.getElementById('pTotalGet').innerText = fmt(totalGet);
+}
+function renderPersonTx() {
+  const txs = state.transactions.filter(t => t.personId === currentPersonId)
+    .sort((a,b) => new Date(b.date) - new Date(a.date));
+  document.getElementById('pTxCount').innerText = txs.length;
+  const container = document.getElementById('personTxList');
+  
+  if (txs.length === 0) {
+    container.innerHTML = `<div class="empty">
+      <div class="empty-icon">📭</div>
+      <p>अभी कोई एंट्री नहीं<br>ऊपर बटन दबाकर जोड़ें</p>
+    </div>`;
+    return;
+  }
+  
+  container.innerHTML = txs.map(t => `
+    <div class="tx-item">
+      <div class="tx-icon ${t.type}">${t.type === 'give' ? '↑' : '↓'}</div>
+      <div class="flex-col" style="flex: 1;">
+        <strong class="${t.type === 'give' ? 'text-danger' : 'text-success'}">
+          ${t.type === 'give' ? 'उधार दिया' : 'जमा लिया'} ${fmt(t.amount)}
+        </strong>
+        <small class="text-sub">${formatDate(t.date)} ${t.note ? '• ' + esc(t.note) : ''}</small>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="requireOwnerAuth(() => deleteTx('${t.id}'), true)">🗑</button>
+    </div>
+  `).join('');
+}
+
+// ============ 3-DOT MENU ACTIONS ============
+function togglePersonMenu(e) {
+  e.stopPropagation();
+  document.getElementById('personMenu').classList.toggle('active');
+}
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#personMenu') && !e.target.closest('.menu-btn')) {
+    document.getElementById('personMenu').classList.remove('active');
+  }
+});
+
+function editPerson() {
+  const p = state.persons.find(x => x.id === currentPersonId);
+  document.getElementById('editPersonId').value = p.id;
+  document.getElementById('personModalTitle').innerText = '✏️ व्यक्ति एडिट करें';
+  document.getElementById('pNameInput').value = p.name;
+  document.getElementById('pPhoneInput').value = p.phone || '';
+  document.getElementById('pGroupInput').value = p.group || 'Other';
+  selectedEmoji = p.emoji || '👤';
+  document.querySelectorAll('#emojiPicker .emoji-option').forEach(e => {
+    e.classList.toggle('selected', e.dataset.emoji === selectedEmoji);
+  });
+  document.getElementById('personMenu').classList.remove('active');
+  document.getElementById('modalPerson').classList.add('active');
+}
+function changePersonEmoji() {
+  document.getElementById('personMenu').classList.remove('active');
+  const grid = document.getElementById('emojiPicker2');
+  grid.innerHTML = ALL_EMOJIS.map(e => 
+    `<div class="emoji-option" onclick="applyEmoji('${e}')">${e}</div>`
+  ).join('');
+  document.getElementById('modalEmoji').classList.add('active');
+}
+function applyEmoji(e) {
+  const p = state.persons.find(x => x.id === currentPersonId);
+  p.emoji = e;
+  saveState();
+  closeModal('modalEmoji');
+  openPersonPage(currentPersonId);
+  showToast('✓ अवतार बदल दिया');
+}
+function setCreditLimit() {
+  const p = state.persons.find(x => x.id === currentPersonId);
+  document.getElementById('creditLimitInput').value = p.creditLimit || '';
+  document.getElementById('personMenu').classList.remove('active');
+  document.getElementById('modalLimit').classList.add('active');
+}
+function saveCreditLimit() {
+  const p = state.persons.find(x => x.id === currentPersonId);
+  p.creditLimit = parseFloat(document.getElementById('creditLimitInput').value) || 0;
+  saveState();
+  closeModal('modalLimit');
+  showToast('✓ क्रेडिट लिमिट सेव');
+}
+function toggleFavorite() {
+  const p = state.persons.find(x => x.id === currentPersonId);
+  p.favorite = !p.favorite;
+  saveState();
+  document.getElementById('personMenu').classList.remove('active');
+  openPersonPage(currentPersonId);
+  showToast(p.favorite ? '⭐ फेवरेट में जोड़ा' : 'फेवरेट से हटाया');
+}
+function shareWhatsApp() {
+  const p = state.persons.find(x => x.id === currentPersonId);
+  const bal = getBalance(currentPersonId);
+  const txs = state.transactions.filter(t => t.personId === currentPersonId);
+  const give = txs.filter(t => t.type === 'give').reduce((a,t) => a + t.amount, 0);
+  const get = txs.filter(t => t.type === 'get').reduce((a,t) => a + t.amount, 0);
+  const msg = `नमस्ते ${p.name} जी,\n\n*आज तक का हिसाब:*\n\n` +
+    `कुल उधार दिया: ${fmt(give)}\n` +
+    `कुल जमा लिया: ${fmt(get)}\n` +
+    `━━━━━━━━━━━━━━━\n` +
+    `${bal >= 0 ? 'आपको देना है' : 'मुझे देना है'}: *${fmt(Math.abs(bal))}*\n\n` +
+    `_Khata Pro से भेजा गया_`;
+  const phone = p.phone ? '91' + p.phone.replace(/\D/g, '') : '';
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+  document.getElementById('personMenu').classList.remove('active');
+}
+function shareSMS() {
+  const p = state.persons.find(x => x.id === currentPersonId);
+  const bal = getBalance(currentPersonId);
+  const msg = `Hi ${p.name}, आपका balance: ${fmt(Math.abs(bal))} (${bal >= 0 ? 'देना' : 'लेना'})`;
+  window.location.href = `sms:${p.phone || ''}?body=${encodeURIComponent(msg)}`;
+  document.getElementById('personMenu').classList.remove('active');
+}
+function callPerson() {
+  const p = state.persons.find(x => x.id === currentPersonId);
+  if (!p.phone) return showToast('⚠️ नंबर नहीं है');
+  window.location.href = `tel:${p.phone}`;
+  document.getElementById('personMenu').classList.remove('active');
+}
+function exportPersonCSV() {
+  const p = state.persons.find(x => x.id === currentPersonId);
+  const txs = state.transactions.filter(t => t.personId === currentPersonId);
+  let csv = `Name,${csvSafe(p.name)}\nPhone,${p.phone || ''}\n\nDate,Type,Amount,Note\n`;
+  txs.forEach(t => {
+    csv += `${t.date},${t.type === 'give' ? 'Udhar' : 'Jama'},${t.amount},"${csvSafe(t.note || '')}"\n`;
+  });
+  downloadFile(csv, `${safeFileName(p.name)}_khata.csv`, 'text/csv');
+  document.getElementById('personMenu').classList.remove('active');
+  showToast('✓ एक्सपोर्ट हो गया');
+}
+function archivePerson() {
+  showConfirm('इस व्यक्ति को आर्काइव करें? (होम पेज पर नहीं दिखेगा)', () => {
+    const p = state.persons.find(x => x.id === currentPersonId);
+    p.archived = true;
+    saveState();
+    document.getElementById('personMenu').classList.remove('active');
+    closePersonPage();
+    syncOverdueToApp();
+    showToast('✓ आर्काइव हो गया');
+  }, { icon: '📦', title: 'आर्काइव करें?', okText: 'हाँ, आर्काइव करो', danger: false });
+}
+// Lazy-load jsPDF + html2canvas only when a statement is actually generated
+let _pdfLibsLoaded = false;
+function _loadScriptOnce(src) {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${src}"]`)) return resolve();
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = resolve;
+    s.onerror = () => reject(new Error('Failed to load ' + src));
+    document.head.appendChild(s);
+  });
+}
+async function _ensurePdfLibs() {
+  if (_pdfLibsLoaded && window.jspdf && window.html2canvas) return;
+  await _loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+  await _loadScriptOnce('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+  _pdfLibsLoaded = true;
+}
+
+async function printStatement() {
+  document.getElementById('personMenu').classList.remove('active');
+  const p = state.persons.find(x => x.id === currentPersonId);
+  const bal = getBalance(currentPersonId);
+  const txs = state.transactions.filter(t => t.personId === currentPersonId)
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
+  const totalGive = txs.filter(t => t.type === 'give').reduce((a, t) => a + t.amount, 0);
+  const totalGet = txs.filter(t => t.type === 'get').reduce((a, t) => a + t.amount, 0);
+
+  // Build an off-screen styled statement (kept off-screen, never shown to the user directly)
+  const wrap = document.createElement('div');
+  wrap.id = 'statementRender';
+  wrap.style.cssText = 'position:fixed; left:-9999px; top:0; width:380px; background:#ffffff; color:#1a1d29; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; padding:22px;';
+  wrap.innerHTML = `
+    <div style="text-align:center; margin-bottom:16px;">
+      <div style="font-size:22px; font-weight:800; color:#4f46e5;">Khata Pro</div>
+      <div style="font-size:12px; color:#6b7280;">स्टेटमेंट / Statement</div>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; border-bottom:1px solid #e5e7eb; padding-bottom:14px;">
+      <div>
+        <div style="font-size:16px; font-weight:700;">${esc(p.name)}</div>
+        <div style="font-size:12px; color:#6b7280; margin-top:2px;">${p.phone || ''}</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:11px; color:#6b7280;">${bal >= 0 ? 'आपको लेना है' : 'आपको देना है'}</div>
+        <div style="font-size:18px; font-weight:800; color:${bal >= 0 ? '#10b981' : '#ef4444'};">${fmt(Math.abs(bal))}</div>
+      </div>
+    </div>
+    <div style="display:flex; gap:10px; margin-bottom:16px;">
+      <div style="flex:1; background:#fef2f2; border-radius:10px; padding:10px;">
+        <div style="font-size:10px; color:#6b7280;">कुल उधार दिया</div>
+        <div style="font-size:14px; font-weight:700; color:#ef4444;">${fmt(totalGive)}</div>
+      </div>
+      <div style="flex:1; background:#ecfdf5; border-radius:10px; padding:10px;">
+        <div style="font-size:10px; color:#6b7280;">कुल जमा लिया</div>
+        <div style="font-size:14px; font-weight:700; color:#10b981;">${fmt(totalGet)}</div>
+      </div>
+    </div>
+    <table style="width:100%; border-collapse:collapse; font-size:11.5px;">
+      <thead>
+        <tr style="background:#f5f7fb;">
+          <th style="text-align:left; padding:6px; font-weight:600;">तारीख</th>
+          <th style="text-align:left; padding:6px; font-weight:600;">विवरण</th>
+          <th style="text-align:right; padding:6px; font-weight:600;">रकम</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${txs.length ? txs.map(t => `
+          <tr style="border-bottom:1px solid #e5e7eb;">
+            <td style="padding:6px; white-space:nowrap;">${formatDate(t.date)}</td>
+            <td style="padding:6px;">${t.type === 'give' ? 'उधार दिया' : 'जमा लिया'}${t.note ? ' • ' + esc(t.note) : ''}</td>
+            <td style="padding:6px; text-align:right; white-space:nowrap; color:${t.type === 'give' ? '#ef4444' : '#10b981'}; font-weight:600;">
+              ${t.type === 'give' ? '-' : '+'}${fmt(t.amount)}
+            </td>
+          </tr>`).join('') : '<tr><td colspan="3" style="padding:14px; text-align:center; color:#9ca3af;">कोई एंट्री नहीं</td></tr>'}
+      </tbody>
+    </table>
+    <div style="margin-top:16px; font-size:10px; color:#9ca3af; text-align:center;">Khata Pro • ${formatDate(new Date().toISOString())}</div>
+  `;
+  document.body.appendChild(wrap);
+
+  showToast('⏳ स्टेटमेंट तैयार हो रहा है...');
+  try {
+    await _ensurePdfLibs();
+    const canvas = await html2canvas(wrap, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+    const imgData = canvas.toDataURL('image/png');
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit: 'px', format: [canvas.width, canvas.height] });
+    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+    const safeName = safeFileName(p.name);
+    pdf.save(`Statement_${safeName}_${new Date().toISOString().split('T')[0]}.pdf`);
+    showToast('✓ PDF स्टेटमेंट डाउनलोड हो गया');
+  } catch (err) {
+    // Offline or CDN blocked: fall back to browser print dialog (user can "Save as PDF" there)
+    console.error('PDF generation failed, falling back to print window:', err);
+    let html = `<h2>${esc(p.name)} - Statement</h2><p>Phone: ${esc(p.phone) || 'N/A'}</p><hr><table border="1" cellpadding="8">
+      <tr><th>Date</th><th>Type</th><th>Amount</th><th>Note</th></tr>`;
+    txs.forEach(t => {
+      html += `<tr><td>${formatDate(t.date)}</td><td>${t.type === 'give' ? 'Udhar' : 'Jama'}</td>
+        <td>${fmt(t.amount)}</td><td>${esc(t.note) || '-'}</td></tr>`;
+    });
+    html += `</table><hr><h3>Balance: ${fmt(Math.abs(bal))} (${bal >= 0 ? 'Lena' : 'Dena'})</h3>`;
+    const w = window.open('', '_blank');
+    if (w) {
+      w.document.write(html);
+      w.document.close();
+      w.print();
+      showToast('⚠️ ऑफलाइन: प्रिंट विंडो से "Save as PDF" चुनें');
+    } else {
+      showToast('❌ स्टेटमेंट नहीं बन पाया, इंटरनेट चेक करें');
+    }
+  } finally {
+    wrap.remove();
+  }
+}
+function addNoteToPerson() {
+  const p = state.persons.find(x => x.id === currentPersonId);
+  document.getElementById('personNoteInput').value = p.note || '';
+  document.getElementById('personMenu').classList.remove('active');
+  document.getElementById('modalNote').classList.add('active');
+}
+function savePersonNote() {
+  const p = state.persons.find(x => x.id === currentPersonId);
+  p.note = document.getElementById('personNoteInput').value.trim();
+  saveState();
+  closeModal('modalNote');
+  openPersonPage(currentPersonId);
+  showToast('✓ नोट सेव हो गया');
+}
+function deletePerson() {
+  showConfirm('यह व्यक्ति और इसकी सारी एंट्रीज़ हमेशा के लिए हट जाएंगी। पक्का?', () => {
+    state.persons = state.persons.filter(p => p.id !== currentPersonId);
+    state.transactions = state.transactions.filter(t => t.personId !== currentPersonId);
+    saveState();
+    document.getElementById('personMenu').classList.remove('active');
+    closePersonPage();
+    renderAll();
+    syncOverdueToApp();
+    showToast('✓ हटा दिया गया');
+  }, { icon: '🗑️', title: 'व्यक्ति हटाएं?', okText: 'हाँ, हटा दो' });
+}
+
+// ============ TRANSACTIONS ============
+function openTxModal() {
+  const p = state.persons.find(x => x.id === currentPersonId);
+  document.getElementById('txPersonId').value = currentPersonId;
+  document.getElementById('txPersonLabel').innerText = '👤 ' + p.name;
+  document.getElementById('txAmount').value = '';
+  document.getElementById('txNote').value = '';
+  document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
+  setTxType('give');
+  document.getElementById('modalTx').classList.add('active');
+  setTimeout(() => document.getElementById('txAmount').focus(), 300);
+}
+function setTxType(type) {
+  currentTxType = type;
+  document.getElementById('btnGive').className = type === 'give' ? 'active-give' : '';
+  document.getElementById('btnGet').className = type === 'get' ? 'active-get' : '';
+}
+function saveTx() {
+  const amount = parseFloat(document.getElementById('txAmount').value);
+  if (!amount || amount <= 0) return showToast('⚠️ सही रकम डालें!');
+  const doSave = () => {
+    state.transactions.push({
+      id: uid(),
+      personId: document.getElementById('txPersonId').value,
+      type: currentTxType,
+      amount: amount,
+      date: document.getElementById('txDate').value,
+      note: document.getElementById('txNote').value.trim(),
+      createdAt: Date.now()
+    });
+    saveState();
+    closeModal('modalTx');
+    updatePersonBalance();
+    renderPersonTx();
+    syncOverdueToApp();
+    showToast('✓ एंट्री सेव हो गई!');
+  };
+  // "जमा लिया" (get) entries need owner verification; "उधार दिया" (give) stays open for anyone.
+  if (currentTxType === 'get') {
+    requireOwnerAuth(doSave);
+  } else {
+    doSave();
+  }
+}
+function deleteTx(tid) {
+  showConfirm('यह एंट्री हटा दें?', () => {
+    state.transactions = state.transactions.filter(t => t.id !== tid);
+    saveState();
+    updatePersonBalance();
+    renderPersonTx();
+    syncOverdueToApp();
+    showToast('✓ हटा दी गई');
+  }, { icon: '🗑️', title: 'एंट्री हटाएं?', okText: 'हाँ, हटा दो' });
+}
+
+// ============ HOME ============
+function renderHome() {
+  const totalGive = state.transactions.filter(t => t.type === 'give').reduce((a,t) => a + t.amount, 0);
+  const totalGet = state.transactions.filter(t => t.type === 'get').reduce((a,t) => a + t.amount, 0);
+  const net = totalGet - totalGive;
+  
+  const getPeople = state.persons.filter(p => getBalance(p.id) > 0).length;
+  const givePeople = state.persons.filter(p => getBalance(p.id) < 0).length;
+  
+  document.getElementById('statGet').innerText = fmt(totalGet);
+  document.getElementById('statGive').innerText = fmt(totalGive);
+  document.getElementById('statNet').innerText = fmt(Math.abs(net));
+  document.getElementById('statGetCount').innerText = getPeople + ' लोग';
+  document.getElementById('statGiveCount').innerText = givePeople + ' लोग';
+  document.getElementById('statNetLabel').innerText = net >= 0 ? 'कुल लेना बाकी' : 'कुल देना बाकी';
+  
+  // Today's summary
+  const today = new Date().toISOString().split('T')[0];
+  const todayTx = state.transactions.filter(t => t.date === today);
+  const todayGive = todayTx.filter(t => t.type === 'give').reduce((a,t) => a + t.amount, 0);
+  const todayGet = todayTx.filter(t => t.type === 'get').reduce((a,t) => a + t.amount, 0);
+  document.getElementById('todaySummary').innerHTML = todayTx.length === 0 ? 
+    `<p class="text-sub" style="text-align:center; padding: 10px;">आज कोई एंट्री नहीं</p>` :
+    `<div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+      <div><small class="text-sub">आज उधार दिया</small><br><strong class="text-danger">${fmt(todayGive)}</strong></div>
+      <div><small class="text-sub">आज जमा लिया</small><br><strong class="text-success">${fmt(todayGet)}</strong></div>
+      <div style="grid-column: span 2;"><small class="text-sub">कुल एंट्रीज़</small><br><strong>${todayTx.length}</strong></div>
+    </div>`;
+  
+  // Top 5 debtors
+  const top = state.persons.map(p => ({ name: p.name, emoji: p.emoji, bal: getBalance(p.id), id: p.id }))
+    .filter(x => x.bal > 0).sort((a,b) => b.bal - a.bal).slice(0, 5);
+  document.getElementById('topDebtors').innerHTML = top.length === 0 ? 
+    `<p class="text-sub" style="text-align:center; padding: 10px;">कोई लेनदार नहीं</p>` :
+    top.map(x => `
+      <div class="list-item" onclick="openPersonPage('${x.id}')">
+        <div class="flex">
+          <div class="avatar" style="background:${getColor(x.name)}; font-size: 1.3rem;">${x.emoji || x.name.charAt(0)}</div>
+          <strong>${esc(x.name)}</strong>
+        </div>
+        <strong class="text-success">${fmt(x.bal)}</strong>
+      </div>
+    `).join('');
+}
+
+// ============ REPORTS ============
+function setReportRange(r, el) {
+  currentReportRange = r;
+  el.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderReports();
+}
+function renderReports() {
+  let txs = state.transactions;
+  const now = new Date();
+  if (currentReportRange === 'week') {
+    const weekAgo = new Date(now.getTime() - 7*24*60*60*1000);
+    txs = txs.filter(t => new Date(t.date) >= weekAgo);
+  } else if (currentReportRange === 'month') {
+    txs = txs.filter(t => {
+      const d = new Date(t.date);
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    });
+  } else if (currentReportRange === 'year') {
+    txs = txs.filter(t => new Date(t.date).getFullYear() === now.getFullYear());
+  }
+  
+  const give = txs.filter(t => t.type === 'give').reduce((a,t) => a + t.amount, 0);
+  const get = txs.filter(t => t.type === 'get').reduce((a,t) => a + t.amount, 0);
+  const net = get - give;
+  
+  document.getElementById('reportSummary').innerHTML = `
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+      <div><small class="text-sub">कुल उधार</small><br><strong class="text-danger">${fmt(give)}</strong></div>
+      <div><small class="text-sub">कुल जमा</small><br><strong class="text-success">${fmt(get)}</strong></div>
+    </div>
+    <div style="padding: 12px; background: var(--primary-light); border-radius: 12px; text-align: center;">
+      <small class="text-sub">Net Balance</small><br>
+      <strong style="font-size: 1.3rem; color: ${net >= 0 ? 'var(--success)' : 'var(--danger)'}">
+        ${fmt(Math.abs(net))} ${net >= 0 ? '(लेना)' : '(देना)'}
+      </strong>
+    </div>
+    <div style="margin-top: 10px; text-align: center;"><small class="text-sub">${txs.length} एंट्रीज़</small></div>
+  `;
+  
+  // Monthly chart
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const currentMonth = now.getMonth();
+  const chartData = [];
+  for (let i = 5; i >= 0; i--) {
+    const m = (currentMonth - i + 12) % 12;
+    const year = now.getFullYear() - (currentMonth - i < 0 ? 1 : 0);
+    const sum = state.transactions.filter(t => {
+      const d = new Date(t.date);
+      return d.getMonth() === m && d.getFullYear() === year;
+    }).reduce((a,t) => a + (t.type === 'get' ? t.amount : -t.amount), 0);
+    chartData.push({ month: months[m], val: Math.abs(sum) });
+  }
+  const maxVal = Math.max(...chartData.map(d => d.val), 1);
+  document.getElementById('monthlyChart').innerHTML = chartData.map(d => `
+    <div class="bar" style="height: ${(d.val / maxVal) * 100}%;">
+      <span class="bar-value">${d.val > 0 ? fmt(d.val).replace(state.settings.currency, '') : ''}</span>
+      <span class="bar-label">${d.month}</span>
+    </div>
+  `).join('');
+  
+  // Top 5
+  const topGet = state.persons.map(p => ({ name: p.name, emoji: p.emoji, bal: getBalance(p.id), id: p.id }))
+    .filter(x => x.bal > 0).sort((a,b) => b.bal - a.bal).slice(0, 5);
+  const topGive = state.persons.map(p => ({ name: p.name, emoji: p.emoji, bal: getBalance(p.id), id: p.id }))
+    .filter(x => x.bal < 0).sort((a,b) => a.bal - b.bal).slice(0, 5);
+  
+  document.getElementById('topGet').innerHTML = topGet.length === 0 ? 
+    `<p class="text-sub" style="text-align:center; padding: 10px;">कोई नहीं</p>` :
+    topGet.map(x => `
+      <div class="list-item" onclick="openPersonPage('${x.id}')">
+        <div class="flex">
+          <div class="avatar" style="background:${getColor(x.name)}; font-size: 1.3rem;">${x.emoji || x.name.charAt(0)}</div>
+          <strong>${esc(x.name)}</strong>
+        </div>
+        <strong class="text-success">${fmt(x.bal)}</strong>
+      </div>
+    `).join('');
+  
+  document.getElementById('topGive').innerHTML = topGive.length === 0 ? 
+    `<p class="text-sub" style="text-align:center; padding: 10px;">कोई नहीं</p>` :
+    topGive.map(x => `
+      <div class="list-item" onclick="openPersonPage('${x.id}')">
+        <div class="flex">
+          <div class="avatar" style="background:${getColor(x.name)}; font-size: 1.3rem;">${x.emoji || x.name.charAt(0)}</div>
+          <strong>${esc(x.name)}</strong>
+        </div>
+        <strong class="text-danger">${fmt(Math.abs(x.bal))}</strong>
+      </div>
+    `).join('');
+}
+
+// ============ HISTORY ============
+function filterTx(f, el) {
+  currentTxFilter = f;
+  el.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  renderHistory();
+}
+function renderHistory() {
+  const search = (document.getElementById('searchTx').value || '').toLowerCase();
+  let txs = [...state.transactions].sort((a,b) => new Date(b.date) - new Date(a.date));
+  if (currentTxFilter !== 'all') txs = txs.filter(t => t.type === currentTxFilter);
+  if (search) {
+    txs = txs.filter(t => {
+      const p = state.persons.find(x => x.id === t.personId);
+      return (p && p.name.toLowerCase().includes(search)) || (t.note && t.note.toLowerCase().includes(search));
+    });
+  }
+  
+  document.getElementById('txCount').innerText = txs.length;
+  const container = document.getElementById('historyList');
+  
+  if (txs.length === 0) {
+    container.innerHTML = `<div class="empty">
+      <div class="empty-icon">📭</div>
+      <p>कोई एंट्री नहीं</p>
+    </div>`;
+    return;
+  }
+  
+  container.innerHTML = txs.map(t => {
+    const p = state.persons.find(x => x.id === t.personId);
+    if (!p) return '';
+    return `
+      <div class="tx-item" onclick="openPersonPage('${p.id}')">
+        <div class="tx-icon ${t.type}">${t.type === 'give' ? '↑' : '↓'}</div>
+        <div class="flex-col" style="flex: 1;">
+          <strong>${esc(p.name)}</strong>
+          <small class="text-sub">${formatDate(t.date)} ${t.note ? '• ' + esc(t.note) : ''}</small>
+        </div>
+        <strong class="${t.type === 'give' ? 'text-danger' : 'text-success'}">
+          ${t.type === 'give' ? '-' : '+'}${fmt(t.amount)}
+        </strong>
+      </div>
+    `;
+  }).join('');
+}
+
+// ============ EXPORT ============
+function downloadFile(content, filename, type) {
+  const blob = new Blob([content], { type });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+function csvSafe(s) {
+  // Prevents CSV/Excel formula injection: a name/note starting with =, +, -, @, or
+  // tab/CR could otherwise execute as a formula when the file is opened in Excel.
+  s = String(s ?? '');
+  return /^[=+\-@\t\r]/.test(s) ? "'" + s : s;
+}
+function exportCSV() {
+  let csv = 'Date,Person,Type,Amount,Note\n';
+  state.transactions.forEach(t => {
+    const p = state.persons.find(x => x.id === t.personId);
+    csv += `${t.date},"${csvSafe(p ? p.name : 'Unknown')}",${t.type === 'give' ? 'Udhar' : 'Jama'},${t.amount},"${csvSafe(t.note || '')}"\n`;
+  });
+  downloadFile(csv, 'khata_report.csv', 'text/csv');
+  showToast('✓ CSV डाउनलोड हो गया');
+}
+function exportJSON() {
+  downloadFile(JSON.stringify(state, null, 2), 'khata_backup_' + new Date().toISOString().split('T')[0] + '.json', 'application/json');
+  showToast('✓ बैकअप डाउनलोड हो गया');
+}
+function importJSON(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      state = JSON.parse(ev.target.result);
+      saveState(); applySettings(); renderAll();
+      showToast('✓ डेटा रिस्टोर हो गया!');
+    } catch (err) { showToast('❌ गलत फाइल!'); }
+  };
+  reader.readAsText(file);
+}
+function clearAllData() {
+  showConfirm('Data clear karne se pehle BACKUP lena zaroori hai.\n\nPehle backup download karein?', () => {
+    exportJSON();
+    setTimeout(() => {
+      showConfirm('Backup ho gaya hai.\n\nAb pakka SAARA data clear karna hai? Ye wapas nahi aayega.', () => {
+        state.persons = []; state.transactions = [];
+        saveState(); renderAll();
+        showToast('✓ सारा डेटा मिटा दिया');
+      }, { icon: '🗑️', title: 'सारा डेटा मिटाएं?', okText: 'हाँ, मिटा दो' });
+    }, 800);
+  }, { icon: '💾', title: 'पहले बैकअप लें', okText: 'बैकअप लो', danger: false });
+}
+function shareApp() {
+  const msg = 'Khata Pro App use karo - best udhar ledger app!';
+  if (navigator.share) {
+    navigator.share({ title: 'Khata Pro', text: msg, url: location.href });
+  } else {
+    showToast('📋 Link copied!');
+  }
+}
+function rateApp() { showToast('⭐ धन्यवाद!'); }
+function openInstagram() {
+  window.open('https://instagram.com/_ayush_singh_990', '_blank');
+}
+function openSupport() {
+  window.location.href = 'mailto:ayushk92355@gmail.com?subject=Khata Pro - Problem/Feedback';
+}
+
+// ============ MODALS ============
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+// ============ CUSTOM CONFIRM (themed replacement for browser confirm()) ============
+let _confirmYesCallback = null;
+function showConfirm(message, onYes, opts = {}) {
+  document.getElementById('confirmIcon').innerText = opts.icon || '⚠️';
+  document.getElementById('confirmTitle').innerText = opts.title || 'पक्का?';
+  document.getElementById('confirmMessage').innerText = message;
+  const okBtn = document.getElementById('confirmOkBtn');
+  okBtn.innerText = opts.okText || 'हाँ, पक्का';
+  okBtn.className = 'btn btn-block ' + (opts.danger === false ? 'btn-primary' : 'btn-danger');
+  _confirmYesCallback = onYes;
+  document.getElementById('modalConfirm').classList.add('active');
+}
+function confirmYes() {
+  document.getElementById('modalConfirm').classList.remove('active');
+  const cb = _confirmYesCallback;
+  _confirmYesCallback = null;
+  if (cb) cb();
+}
+function confirmNo() {
+  document.getElementById('modalConfirm').classList.remove('active');
+  _confirmYesCallback = null;
+}
+
+// ============ OWNER EDIT-LOCK ============
+// Any edit/delete action must pass through requireOwnerAuth(). Non-destructive edits
+// (editPerson, emoji, etc.) may skip re-asking once verified in a session for convenience.
+// Destructive actions (delete person, delete transaction, archive, factory reset) ALWAYS
+// ask again every single time, regardless of any earlier verification in the session.
+let _pendingOwnerAction = null;
+let _pendingAlwaysAsk = false;
+function getOwnerCode() {
+  const c = localStorage.getItem('owner_edit_code');
+  return (c === null) ? '7793' : c; // '' means owner-lock removed entirely
+}
+function requireOwnerAuth(action, alwaysAsk = false) {
+  const code = getOwnerCode();
+  if (code === '') { action(); return; } // owner removed the lock
+  if (!alwaysAsk && sessionStorage.getItem('ownerVerified') === '1') { action(); return; }
+  _pendingOwnerAction = action;
+  _pendingAlwaysAsk = alwaysAsk;
+  document.getElementById('ownerAuthInput').value = '';
+  document.getElementById('ownerAuthError').innerText = '';
+  document.getElementById('modalOwnerAuth').classList.add('active');
+  setTimeout(() => document.getElementById('ownerAuthInput').focus(), 250);
+}
+function submitOwnerAuth() {
+  const entered = document.getElementById('ownerAuthInput').value.trim();
+  if (entered === getOwnerCode()) {
+    // Destructive (alwaysAsk) actions never grant a session pass, so the next
+    // delete/reset always prompts again too.
+    if (!_pendingAlwaysAsk) sessionStorage.setItem('ownerVerified', '1');
+    document.getElementById('modalOwnerAuth').classList.remove('active');
+    const action = _pendingOwnerAction;
+    _pendingOwnerAction = null;
+    _pendingAlwaysAsk = false;
+    if (action) action();
+  } else {
+    document.getElementById('ownerAuthError').innerText = '❌ Galat code, phir try karo';
+    document.getElementById('ownerAuthInput').value = '';
+  }
+}
+function cancelOwnerAuth() {
+  _pendingOwnerAction = null;
+  document.getElementById('modalOwnerAuth').classList.remove('active');
+}
+function openChangeOwnerCodeModal() {
+  requireOwnerAuth(() => {
+    document.getElementById('ownerOldCode').value = '';
+    document.getElementById('ownerNewCode').value = '';
+    document.getElementById('ownerNewCode2').value = '';
+    document.getElementById('ownerCodeError').innerText = '';
+    document.getElementById('modalOwnerCode').classList.add('active');
+  });
+}
+function saveOwnerCode() {
+  const oldC = document.getElementById('ownerOldCode').value.trim();
+  const newC = document.getElementById('ownerNewCode').value.trim();
+  const newC2 = document.getElementById('ownerNewCode2').value.trim();
+  const err = document.getElementById('ownerCodeError');
+  if (oldC !== getOwnerCode()) { err.innerText = '❌ Purana code galat hai'; return; }
+  if (newC !== newC2) { err.innerText = '❌ Naya code match nahi ho raha'; return; }
+  if (newC !== '' && !/^\d{4}$/.test(newC)) { err.innerText = '❌ Code exactly 4 digit ka hona chahiye'; return; }
+  localStorage.setItem('owner_edit_code', newC);
+  closeModal('modalOwnerCode');
+  showToast(newC === '' ? '✓ Owner lock hata diya gaya' : '✓ Owner code badal gaya');
+}
+
+// ============ INIT ============
+function renderAll() {
+  renderHome();
+  renderContacts();
+  renderHistory();
+}
+
+// ============ PAYMENT REMINDER SYNC (for App Inventor Alarm Extension) ============
+// Reminder days settings: kitne din baad pehla reminder chahiye (default 7)
+function getReminderDays() {
+  return state.settings.reminderDays || 7;
+}
+// Har us person ki list jiska udhaar (balance > 0) reminder-ke-din se purana hai.
+// Har entry: { id, name, phone, balance, daysPassed }
+function getOverdueDebtors() {
+  const minDays = getReminderDays();
+  const now = Date.now();
+  const list = [];
+  state.persons.forEach(p => {
+    if (p.archived) return;
+    const bal = getBalance(p.id);
+    if (bal <= 0) return; // isne sab chuka diya ya jama zyada hai
+    const giveTxs = state.transactions.filter(t => t.personId === p.id && t.type === 'give');
+    if (giveTxs.length === 0) return;
+    const oldestGive = Math.min(...giveTxs.map(t => new Date(t.date).getTime()));
+    const daysPassed = Math.floor((now - oldestGive) / (1000 * 60 * 60 * 24));
+    if (daysPassed >= minDays) {
+      list.push({ id: p.id, name: p.name, phone: p.phone || '', balance: bal, daysPassed });
+    }
+  });
+  return list;
+}
+// Jo persons ab overdue nahi hain (settle ho gaye ya balance clear) - inke alarm cancel karne ke liye
+function getSettledPersonIds() {
+  return state.persons.filter(p => getBalance(p.id) <= 0).map(p => p.id);
+}
+// App Inventor WebViewer ko data bhejta hai. App Inventor side "WebViewString" property
+// se yeh JSON padhega aur AlarmExtension se real notification schedule karega.
+function syncOverdueToApp() {
+  try {
+    // Settings > Notifications > "Payment Reminders" toggle off hai to kuch bhi na bhejo
+    const payload = state.settings.reminder
+      ? { remindersOn: true, overdue: getOverdueDebtors(), settled: getSettledPersonIds() }
+      : { remindersOn: false, overdue: [], settled: getSettledPersonIds() }; // OFF karne par sab existing alarms cancel karwane ke liye settled bhej dete hain
+    if (window.AppInventor && window.AppInventor.setWebViewString) {
+      window.AppInventor.setWebViewString(JSON.stringify(payload));
+    }
+  } catch (e) { /* App Inventor bridge available nahi hai (jaise normal browser mein test karte waqt) - ignore */ }
+}
+
+loadState();
+applySettings();
+renderAll();
+syncOverdueToApp();
+
+// Show PIN screen if lock enabled
+if (state.settings.lock) {
+  showPinScreen('unlock');
+}
+</script>
+</body>
+</html>
